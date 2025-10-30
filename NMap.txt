@@ -56,5 +56,27 @@ PORT      STATE SERVICE
 31337/tcp open  Elite
 
 Nmap done: 1 IP address (1 host up) scanned in 26.92 seconds
+-------------------------------------------------------------------------------------------------------------------------------------
+section -3
+core NMap skills- basic scans, top 5 commands
+---------------------------------------------
+11.Nmap Help to the Rescue!
+--------------------------
+- | $nmap -h | 
+  <nmap -h = shows the help manual with all available flags and usage syntax — super useful for beginners and quick reminders for advanced    	users.>
+
+12. How to Scan a Host, Subnet, or IP Range
+--------------------------------------------
+-| $ifconfig |:-
+  ifconfig is a classic Unix/Linux command that shows and configures network interfaces. On Kali (and most Linux distros) you can use it to    view IP addresses, MACs, interface status, and bring interfaces up/down.
+
+- to scan a domain | $nmap scanme.nmap.org |
+- to scan a ip address | $nmap 192.168.4.1 |
+- | $nmap 192.168.4.0/24 | to scan a host
+- | $nmap 192.168.1.0/24 192.168.4.0/24 | to scan a tow subnet or multiple subnet scanning
+- | $nmap 192.168.4.0-10 | to scan a range address in a subnet
+
+
+
                                                               
 
