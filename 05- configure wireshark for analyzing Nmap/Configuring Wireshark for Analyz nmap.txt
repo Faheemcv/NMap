@@ -1,0 +1,32 @@
+15. Configuring Wireshark for Analyzing Nmap
+-----------------------------------------------
+Step 1: Open Wireshark and start any capture
+You can use a filter such as:
+| $ sudo nmap -sP 192.168.4.1 |
+(or your target IP from Nmap).
+
+ Step 2: Open Coloring Rules
+In Wireshark:
+Go to the menu:
+View → Coloring Rules…
+You’ll see a list of predefined color rules.
+Click + (Add) to create new ones.
+
+Step 3: Add useful rules for Nmap analysis
+
+Here are recommended rules (you can copy/paste them).
+
+#	Name	Display Filter	Foreground / Background
+1	TCP SYN (scan probe)	tcp.flags.syn == 1 && tcp.flags.ack == 0	Text: Black / Background: Light Blue
+2	SYN-ACK (open port)	tcp.flags.syn == 1 && tcp.flags.ack == 1	Text: Black / Background: Light Green
+3	TCP RST (closed port)	tcp.flags.reset == 1	Text: White / Background: Red
+4	ICMP Echo Request	icmp.type == 8	Text: Black / Background: Light Yellow
+5	ICMP Echo Reply	icmp.type == 0	Text: Black / Background: Green
+6	ICMP Port Unreachable (UDP closed)	icmp.type == 3 && icmp.code == 3	Text: White / Background: Dark Red
+7	UDP traffic (scan probes)	udp	Text: Black / Background: Light Orange
+8	ARP requests	arp.opcode == 1	Text: Black / Background: Light Purple
+9	ARP replies	arp.opcode == 2	Text: White / Background: Purple
+10	Retransmissions / errors	`tcp.analysis.retransmission	
+
+Step 4: Save your color set
+
