@@ -1,0 +1,22 @@
+
+
+13. Identifying Open Ports an Services on a Host
+--------------------------------------------------
+PORT SPECIFICATION AND SCAN ORDER
+-----------------------------------
+:-  (-F):- Fast Mode - scan fewer ports than default Scan
+:-  (-p):- Only Scan Specific Ports 
+  | $ nmap -p80,443 192.168.1.1 |
+- scan a range of ports 
+  | $ nmap -p1-100 192.168.1.1 |
+- Scan all the TCP Ports
+| $nmap -p- 192.168.4.1-10 |
+- Scan all UDP ports
+  | $ sudo nmap -p80,443 -sU 192.168.4.1-10 |
+
+
+
+
+
+                                                              
+
