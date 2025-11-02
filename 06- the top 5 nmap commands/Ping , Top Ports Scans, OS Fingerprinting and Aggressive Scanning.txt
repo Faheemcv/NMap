@@ -1,0 +1,62 @@
+-------------------------------------------------------------------------------------
+16. Lab - Ping and Top Ports Scans
+--------------------------------------
+1.| $sudo nmap -sn 192.168.1.1 |
+  What sudo nmap -sn 192.168.1.1 does
+  Short version: it checks whether the host 192.168.1.1 is up (reachable). It does host discovery only — no port scanning.
+
+  sudo — runs Nmap with root privileges (allows raw packets and useful probes such as ARP).
+  nmap — the program.
+  -sn — ping scan / host discovery only. Nmap will not scan ports; it only tries to determine whether the target is alive.
+  192.168.1.1 — target IP (single host).
+
+2.| $ sudo nmap -sn 192.168.1.0/24 |
+  Nice — sudo nmap -sn 192.168.1.0/24 is a very common and useful command. Here’s exactly what it does, what to expect, and a few handy   variants.
+
+  sudo — runs Nmap with root privileges (allows ARP/raw packets).
+  nmap — the tool.
+  -sn — ping scan / host discovery only (no port scans).
+  192.168.1.0/24 — target subnet (all addresses from 192.168.1.0 to 192.168.1.255).
+ 
+  Result: Nmap will probe each IP in that /24 to determine which hosts are “up” (alive). On a local Ethernet/bridged VM it will prefer ARP   requests (very reliable), and also send ICMP or TCP probes as needed.
+
+3.| $ nmap --top-ports 20 192.168.1.1 |
+ :- nmap — run Nmap.
+ :- --top-ports 20 — scan the 20 most common ports according to Nmap’s internal ranked list (instead of the default top 1000 or specifying  ports manually).
+ :- 192.168.1.1 — the single target IP.
+  So Nmap will probe the 20 ports it considers most likely to be open on that host and report which are open/closed/filtered and the service   name it recognizes (e.g., http, ssh).
+
+. Lab - OS Fingerprinting and Aggressive Scanning
+---------------------------------------------------
+
+4.| $ nmap -O 192.168.1.1 |
+  Short answer: -O tells Nmap to perform OS detection (TCP/IP stack fingerprinting) against the target 192.168.1.1. Nmap will try to identify the operating system and sometimes the device type (router, printer, Linux, Windows, etc.).
+nmap — the tool.
+-O — enable OS detection. Nmap sends a series of carefully crafted probes and examines subtle differences in the TCP/IP responses to match them against its OS fingerprint database.
+192.168.1.1 — target IP.
+
+5.| $ sudo nmap -A 192.168.1.1 |
+  Nice — sudo nmap -A 192.168.1.1 is one of the most commonly used one-liners for a thorough, quick reconnaissance of a host. Here’s a clear breakdown of what it does, what to expect, and important cautions.
+  What -A does
+  -A enables "aggressive" mode — a bundle of advanced checks:
+  OS detection (-O) — fingerprint the target’s operating system.
+  Version detection (-sV) — probe open ports to identify service names and versions.
+  Nmap Scripting Engine (NSE) (--script=default) — run default NSE scripts (e.g., banner grabs, basic vulnerability/info scripts).
+  Traceroute — map the path packets take to the target.
+  So the command runs host discovery (if needed), scans ports, then performs OS/service detection, runs scripts, and does traceroute.
+
+
+6. | $sudo nmap -sS -p 80 scanme.nmap.org |
+  Nice — that’s a common Nmap command. Here’s a clear breakdown of what it does, what you’ll see, and safe/ethical notes.
+$ sudo nmap -sS -p 80 scanme.nmap.org
+
+sudo — runs nmap with root privileges (required for some low-level scan types so raw packets can be sent).
+
+nmap — the network mapper program.
+
+-sS — SYN scan (a “half-open” TCP scan). Nmap sends a TCP SYN; if the target replies with SYN/ACK the port is considered open (Nmap then sends RST to avoid completing the full TCP handshake). Fast and stealthier than a full connect scan.
+
+-p 80 — scan only TCP port 80 (HTTP).
+
+scanme.nmap.org — the target hostname. (This host is intentionally provided by the Nmap project for testing — it’s allowed to scan. Do not scan systems you don’t have permission for.)
+                                                              
