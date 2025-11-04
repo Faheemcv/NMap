@@ -1,0 +1,7 @@
+The TCP Connect Scan
+------------------------
+The TCP Connect Scan is the simplest TCP port scan type: it uses the operating system’s network stack to complete the full TCP 3-way handshake with each target port. In Nmap you request it with -sT. It’s the fallback when you don’t have raw-socket privileges (no sudo).
+
+Command:- | nmap -sT -p 1-1024 target.example.com |
+or for a single port:
+| nmap -sT -p 80 scanme.nmap.org |
