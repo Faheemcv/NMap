@@ -1,0 +1,84 @@
+Section - 5   INTERPRETING NMAP SCAN RESULTS
+---------------------------------------------
+What is a TCP/UDP Ports ?
+-------------------------
+- port :- Ports are simply a software abstraction, used to distinguish between communication channels. Similar to the way IP addresses are used to identify machines on networks, ports identify specific applications in use on a single machine.
+
+- A port is like a doorway or channel inside a computer or network device that allows data to enter or leave.
+
+There are two main types of ports based on the transport protocol:
+
+Protocol	Full Form	  	Type				Features
+TCP	Transmission Control Protocol	Connection-oriented	Reliable, ensures delivery, performs error checking
+UDP	User Datagram Protocol		Connectionless	Faster, but no guarantee of delivery or order
+
+TCP (Transmission Control Protocol)
+
+Creates a reliable connection before sending data.
+Ensures that all packets are delivered in order and without loss.
+Used for most important services that need reliability.
+
+ Examples of TCP services:
+
+Service	Port	Description
+HTTP	80	Web browsing
+HTTPS	443	Secure web browsing
+FTP	21	File transfer
+SSH	22	Secure remote login
+SMTP	25	Sending emails
+
+UDP (User Datagram Protocol)
+
+No connection — sends packets directly, faster but less reliable.
+Best for real-time or streaming data, where some packet loss is acceptable.
+
+ Examples of UDP services:
+
+Service	Port	Description
+DNS	53	Domain name lookup
+DHCP	67, 68	Dynamic IP addressing
+TFTP	69	Trivial file transfer
+SNMP	161	Network management
+NTP	123	Time synchronization
+
+The six Nmap port states
+-----------------------------
+open —
+ A service is listening on the port (Nmap saw a response indicating the port accepts connections).
+ Typical TCP signal: target replied SYN/ACK to our SYN (or completed connect).
+ Meaning: an application is reachable and may be probed further.
+
+closed —
+ The port is reachable but there is no service listening.
+ Typical TCP signal: target replied RST.
+ Meaning: host is up, port answered, but nothing is accepting connections.
+
+filtered —
+ Nmap cannot determine whether the port is open because packets are being dropped/blocked (firewall or filter).
+ Typical behaviour: no reply or ICMP unreachable responses.
+ Meaning: access is blocked; you can’t tell open vs closed.
+
+unfiltered —
+ Nmap can reach the port but cannot determine whether it is open or closed.
+ Typical use: used mostly with UDP/ACK scans where reachability is tested; indicates the probe was not blocked.
+ Meaning: host responded to probes but port state (open/closed) is unknown.
+
+open|filtered —
+ Nmap cannot distinguish between open and filtered (common with UDP, IP protocols, or some scan types that produce ambiguous results).
+ Typical behaviour: no response where both “open” or “filtered” are plausible.
+ Meaning: either a service accepted the probe silently or responses are being dropped.
+
+closed|filtered —
+ Nmap is unsure whether a port is closed or filtered.
+ Typical behaviour: ambiguous/noisy responses from certain scan types (rare).
+ Meaning: scanner couldn’t definitively decide between closed or filtered for that probe.
+
+. The Stealth Scan
+-------------------------
+The Stealth Scan (SYN Scan) in Nmap
+
+The Stealth Scan, also known as a SYN scan, is one of the most popular and powerful scan types in Nmap.
+It’s called “stealth” because it doesn’t complete the full TCP handshake, making it less likely to be logged or detected by some systems.
+
+Command:- | sudo nmap -sS <target> | | sudo nmap -sS scanme.nmap.org |
+          -------------------------------------------------------------
