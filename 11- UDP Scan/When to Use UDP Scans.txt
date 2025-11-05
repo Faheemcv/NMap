@@ -1,0 +1,10 @@
+When to Use UDP Scans
+---------------------------
+UDP scans (-sU) are used when you need to discover UDP-based services or understand how UDP traffic is treated by hosts/firewalls. UDP is very different from TCP: many services speak UDP (DNS, SNMP, NTP, etc.), UDP is connectionless, and responses (or lack of them) are interpreted differently. Use a UDP scan when any of the following apply.
+
+When to run a UDP scan — practical situations
+You need to find UDP services (DNS, NTP, SNMP, TFTP, DHCP, NetBIOS, RIP, SSDP, IPSec/IKE).
+Performing a full inventory of a host/subnet — include UDP to avoid blindspots.
+Security testing / vulnerability assessment — many vulnerabilities are on UDP services (SNMP misconfigs, open DNS resolvers, etc.).
+Troubleshooting UDP connectivity — determine whether UDP probes are dropped by a firewall.
+Firewall / filtering analysis — UDP behavior often shows “open|filtered” vs. ICMP port unreachable (closed), revealing filter policies.
