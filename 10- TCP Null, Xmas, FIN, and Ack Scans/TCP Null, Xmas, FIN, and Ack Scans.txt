@@ -1,0 +1,48 @@
+TCP Null, Xmas, FIN, and Ack Scans
+--------------------------------------
+TCP Null, Xmas, FIN, and ACK scans — what they are & how to read them
+
+These are special TCP scan types that manipulate TCP flags to elicit different responses from a target. They’re often used to bypass naive firewall rules or to fingerprint filtering behavior. Nmap supports them with -sN (Null), -sF (FIN), -sX (Xmas), and -sA (ACK). Below is a compact cheat-sheet: what each sends, what replies mean, common uses, and caveats.
+
+Quick command cheats
+
+Null scan: sudo nmap -sN <target>
+FIN scan: sudo nmap -sF <target>
+Xmas scan: sudo nmap -sX <target>
+ACK scan: nmap -sA <target> (doesn’t require root)
+
+Use --reason to show why Nmap labeled a port that way.
+
+1) Null scan (-sN)
+   What it sends: a TCP packet with no flags set.
+   Interpretation (classic TCP/IP behavior / RFC 793):
+   No reply → port open or filtered (many systems historically don’t respond to these packets on open ports).
+   RST → port closed.
+   Use case: try to bypass simple stateless filters or test RFC-compliant stacks.
+   Caveats: Modern firewalls/OSes often don’t follow the classic behavior; many will drop or respond differently. Rarely reliable on Windows   (Windows typically responds with RST for closed and open ports—making results confusing).
+
+2) FIN scan (-sF)
+   What it sends: a TCP packet with only the FIN flag set.
+   Interpretation:
+   No reply → port open or filtered.
+   RST → port closed.
+   Use case: similar to Null; historically effective against older UNIX stacks and some firewall setups.
+   Caveats: Not reliable against modern systems (Windows often just replies RST, so FIN won’t show open ports there).
+
+3) Xmas scan (-sX)
+   What it sends: a TCP packet with FIN, PSH, and URG flags set (lights up like a Christmas tree—hence the name).
+   Interpretation:
+   No reply → port open or filtered.
+   RST → port closed.
+   Use case: another trick to trigger different behavior in RFC-compliant stacks; can sometimes bypass some poorly configured filters.
+   Caveats: Same reliability problems as Null/FIN; poor results on Windows. Modern IDS/IPS can spot this pattern easily.
+
+4) ACK scan (-sA)
+   What it sends: a TCP packet with only the ACK flag set (resembles normal established-connection traffic).
+   Interpretation: different goal than the above scans.
+   RST reply → target is unfiltered (i.e., packets reach the host and the host responds).
+   No reply or ICMP unreachable → packet is filtered (firewall/router dropping the probe).
+   Use case: determine whether a firewall is stateful or whether a port is filtered — useful for mapping firewall rules (not for open/closed  detection).
+   Caveats: ACK scans generally cannot tell open vs closed, only filtered vs unfiltered. Good for discovering stateful firewall behavior.
+
+                                                              
