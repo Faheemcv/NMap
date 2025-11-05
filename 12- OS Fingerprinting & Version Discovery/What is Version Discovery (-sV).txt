@@ -1,0 +1,18 @@
+What is Version Discovery?
+-------------------------------
+                                                              
+Version discovery (also called service version detection) is an Nmap feature used to identify the exact software and version running on open ports — not just the port number or service name.
+It’s activated using the -sV option and is one of the most powerful parts of Nmap’s scanning capabilities.
+
+| sudo nmap -sV 192.168.1.1 |
+| sudo nmap -sV scanme.nmap.org |
+| sudo nmap -sS -sV 192.168.1.10 |
+
+Purpose
+
+When Nmap detects an open port (e.g., port 80 = HTTP), it doesn’t automatically know:
+Which web server is running (Apache, Nginx, IIS, etc.),
+What version it is (e.g., Apache 2.4.54), or
+What protocol variant is used (e.g., HTTPS vs HTTP).
+
+That’s where version discovery comes in — it probes the service with carefully chosen requests to elicit identifiable responses and compare them against Nmap’s built-in service fingerprint database.
