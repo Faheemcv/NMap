@@ -1,0 +1,21 @@
+Using Verbosity in Nmap Output
+--------------------------------
+Using Verbosity in Nmap Output (-v and -vv)
+
+Verbosity in Nmap controls how much detail Nmap displays during and after a scan.
+It’s extremely helpful for understanding scan progress, why results appear a certain way, and debugging network issues.
+
+Purpose of Verbosity
+
+By default, Nmap keeps its output concise.
+Adding verbosity (-v) increases the level of information shown about:
+Scan progress
+Host discovery
+Port states
+Service detection
+OS detection and reasoning
+You can add multiple v characters (e.g., -vv, -vvv) to increase the level of detail.
+
+| nmap -v <target> |
+| nmap -vv <target> |
+| nmap -sS -sV -O -v <target> |
