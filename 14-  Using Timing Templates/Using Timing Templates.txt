@@ -1,0 +1,28 @@
+Section 7 :                    SCAN TIMING AND PERFORMANCE
+------------------------------------------------------------
+
+ Using Timing Templates
+-------------------------
+- Scans will be faster when we use timing templates
+Timing templates in Nmap control how fast or slow your scan runs — balancing speed, accuracy, and stealth.
+
+Purpose of Timing Templates
+
+Different networks and environments require different scanning speeds:
+Slow scans are stealthy and less likely to trigger firewalls or intrusion detection systems (IDS).
+Fast scans finish quickly but can overwhelm networks or be easily detected.
+Timing templates give you quick presets so you don’t have to fine-tune dozens of individual timing options.
+
+Command Syntax
+| nmap -T<0-5> <target> |
+
+| $sudo nmap scanme.nmap.org -T5 |
+
+The Six Timing Templates
+Template	Name	Description
+-T0	Paranoid	Slowest. Used for IDS evasion — sends one probe every 5 minutes.
+-T1	Sneaky	Very slow, stealthy scanning.
+-T2	Polite	Slower than default; reduces network load.
+-T3	Normal (Default)	Balanced speed and reliability.
+-T4	Aggressive	Faster scans for reliable networks; may trigger IDS/firewalls.
+-T5	Insane	Extremely fast — for local networks only. High risk of dropped packets.
