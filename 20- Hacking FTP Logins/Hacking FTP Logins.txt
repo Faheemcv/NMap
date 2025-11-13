@@ -1,0 +1,18 @@
+Lab - Hacking FTP Logins
+--------------------------------------------
+1.Defensive / hardening guide for FTP servers
+  Disable plain FTP; use SFTP (SSH) or FTPS (FTP over TLS).
+  Disable anonymous logins.
+  Enforce strong password policies and use account lockouts / rate-limiting.
+  Use chroot (jail) so users can’t traverse the filesystem.
+  Enable logging (detailed auth logs) and centralize logs (SIEM).
+  Deploy fail2ban / iptables rules to block repeated failed attempts.
+  Use MFA where possible (for admin accounts).
+  Keep FTP software (vsftpd, proftpd, pure-ftpd) patched; only enable needed modules.
+  Monitor for signs of compromise (new users, altered files, unusual transfers).
+2.How to perform authorized FTP security testing in a lab (safe, legal)
+  Set up an isolated lab: two VMs on an internal-only virtual network (attacker + victim).
+  Install a vulnerable target intentionally (Metasploitable or a lab image) or a fresh FTP server you control.
+  Create test accounts with weak/strong passwords and observe how the server behaves.
+  Use logging and packet capture (tcpdump/Wireshark) to learn how FTP authentication looks on the wire.
+  Practice remediations (apply FTPS, configure fail2ban) and verify protections block the noisy tests.
