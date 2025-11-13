@@ -1,0 +1,18 @@
+
+What is the Nmap Scripting Engine (NSE)?
+-------------------------------------------
+The Nmap Scripting Engine (NSE) is a framework within Nmap that uses scripts written in Lua to extend Nmap’s functionality beyond basic port scanning.
+
+NSE is used to:
+
+Detect vulnerabilities in applications or systems.
+Perform network discovery (find hosts, open ports, and services).
+Enumerate users, shares, and configurations.
+Brute-force credentials (where legal).
+Perform version and OS detection enhancements.
+Automate custom scanning logic via scripts.
+
+ The Script Database
+-------------------------------
+
+The “script database” refers to the collection of NSE scripts and their supporting libraries that ship with Nmap (and the index Nmap builds for searching/help). It’s the place Nmap looks when you run --script=..., and it’s what powers -sC, --script-help, --script-updatedb, tab-completion, etc. Here’s a compact, practical guide to its layout, metadata, how to search/update it, and how to use scripts safely.
