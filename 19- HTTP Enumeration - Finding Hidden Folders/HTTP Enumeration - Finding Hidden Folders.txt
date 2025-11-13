@@ -1,0 +1,9 @@
+HTTP Enumeration - Finding Hidden Folders
+----------------------------------------------------
+Nice — here’s the rest of the lab: how to test discovered paths manually, verify findings, escalate safely in a lab, and how defenders should fix the problems. I’ll keep it actionable: commands you can run, what results mean, and next steps.
+
+| ─$ nmap --script "http-enum" 192.168.1.0  |
+
+1) Confirm a discovery (manual checks)
+When a fuzzer or http-enum reports a path (e.g. /admin, /backup.zip, /.git/), always verify manually:
+Inspect response headers + body:
