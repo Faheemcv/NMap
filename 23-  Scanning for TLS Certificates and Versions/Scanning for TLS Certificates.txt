@@ -1,0 +1,25 @@
+ Lab - Scanning for TLS Certificates and Versions
+----------------------------------------------------
+
+1. What Is TLS Certificate & Version Scanning?
+
+TLS scanning helps you identify:
+
+✔ TLS/SSL version
+(SSLv2, SSLv3, TLS 1.0/1.1/1.2/1.3)
+
+✔ Certificate details
+Common Name (CN)
+SAN domains
+Issuer (CA)
+Expiration date
+Key size (1024/2048 bits)
+Signature algorithm (SHA1/SHA256)
+Weak or expired certificates
+
+✔ Weak configurations
+Deprecated versions (SSLv2, SSLv3, TLS1.0)
+Weak ciphers (RC4, DES, EXPORT-grade)
+
+ 2. Nmap Scripts for TLS/SSL Scanning
+Nmap provides NSE scripts designed for SSL/TLS.
