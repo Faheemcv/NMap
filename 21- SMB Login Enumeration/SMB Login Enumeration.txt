@@ -1,0 +1,19 @@
+Lab - SMB Login Enumeration
+------------------------------------
+SMB (Server Message Block) is the protocol Windows uses for file and printer sharing — ports 445/tcp and sometimes 139/tcp.
+
+Login enumeration means:
+Checking which SMB accounts exist or are valid, often by analyzing the server’s responses to authentication or info queries.
+
+This helps network defenders and ethical pentesters find:
+
+Misconfigured shares (like “Everyone” access)
+Anonymous or guest access
+Usernames exposed through SMB responses
+Weak or default configurations
+
+Why It Matters
+
+Attackers may try to enumerate SMB logins to prepare brute-force or password-spray attacks.
+Admins can test for this exposure to harden systems and prevent information leakage.
+During vulnerability assessments, SMB enumeration often reveals domain users, OS info, shares, and permissions.
