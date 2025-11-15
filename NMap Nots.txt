@@ -1,0 +1,666 @@
+NMap
+__________
+Nmap (Network Mapper) is a powerful open-source tool used for network scanning and security auditing. It helps network administrators and cybersecurity professionals discover devices on a network, find open ports, detect services running on those ports, and check for vulnerabilities.
+
+-|What Can Nmap Do?
+  Scan networks to detect connected hosts and their IP addresses.
+  Find open ports on a device (like port 80 for HTTP, 22 for SSH, etc.).
+  Identify services and versions running on those ports.
+  Detect operating systems (OS detection).
+  Check for security vulnerabilities.
+  Perform network security audits.
+
+-|Common Use Cases
+  Penetration testing
+  Network inventory
+  Firewall testing
+  Monitoring host or service uptime
+
+NMAP WEBSITE
+-------------
+1. http://scanme.nmap.org/
+2. https://ginandjuice.shop/
+
+capturing Nmap scans with wireshark
+-------------------------------------
+- open the wireshark double click ethernet0  
+- open kalilinux terminal emulator use the command line
+  | $sudo nmap -sS -p 80,443 webscantest.com |
+- in wireshark  we can see the packet captured through the cable ethernet0. when scan is run
+
+LAB- FIRST NMAP SCAN
+-------------------------
+| $nmap scanme.nmap.org |
+
+This runs a basic default Nmap scan on the host scanme.nmap.org, which is a public test server provided by the Nmap developers themselves.
+- nmap → launches the Nmap network scanning tool.
+- scanme.nmap.org → is the target domain (owned by Nmap for safe testing).
+
+-|Purpose of This Command
+Practice: It’s meant for beginners and learners to safely test Nmap without breaking any rules.
+Demonstration: To understand how scanning works, and what typical Nmap output looks like.
+Testing installations: To confirm that Nmap is installed and working properly on your system.
+
+After scanning of kalilinux terminal
+---------
+─$ nmap scanme.nmap.org
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-10-30 03:09 EDT
+Nmap scan report for scanme.nmap.org (45.33.32.156)
+Host is up (0.31s latency).
+Other addresses for scanme.nmap.org (not scanned): 2600:3c01::f03c:91ff:fe18:bb2f
+Not shown: 996 closed tcp ports (reset)
+PORT      STATE SERVICE
+22/tcp    open  ssh
+80/tcp    open  http
+9929/tcp  open  nping-echo
+31337/tcp open  Elite
+
+Nmap done: 1 IP address (1 host up) scanned in 26.92 seconds
+--------------------------------------------------------------------------------------------------------------------------------------------
+section -3
+core NMap skills- basic scans, top 5 commands
+---------------------------------------------
+11.Nmap Help to the Rescue!
+--------------------------
+- | $nmap -h | 
+  <nmap -h = shows the help manual with all available flags and usage syntax — super useful for beginners and quick reminders for advanced    	users.>
+-----------------------------------------------------------------------------
+
+12. How to Scan a Host, Subnet, or IP Range
+--------------------------------------------
+-| $ifconfig |:-
+  ifconfig is a classic Unix/Linux command that shows and configures network interfaces. On Kali (and most Linux distros) you can use it to    view IP addresses, MACs, interface status, and bring interfaces up/down.
+
+- to scan a domain | $nmap scanme.nmap.org |
+- to scan a ip address | $nmap 192.168.4.1 |
+- | $ nmap 192.168.4.0/24 | to scan a host
+- | $ nmap 192.168.1.0/24 192.168.4.0/24 | to scan a tow subnet or multiple subnet scanning
+- | $ nmap 192.168.4.0-10 | to scan a range address in a subnet
+-----------------------------------------------------------------------------------------------
+
+13. Identifying Open Ports an Services on a Host
+--------------------------------------------------
+PORT SPECIFICATION AND SCAN ORDER
+-----------------------------------
+:-  (-F):- Fast Mode - scan fewer ports than default Scan
+:-  (-p):- Only Scan Specific Ports 
+  | $ nmap -p80,443 192.168.1.1 |
+- scan a range of ports 
+  | $ nmap -p1-100 192.168.1.1 |
+- Scan all the TCP Ports
+| $nmap -p- 192.168.4.1-10 |
+- Scan all UDP ports
+  | $ sudo nmap -p80,443 -sU 192.168.4.1-10 |
+
+------------------------------------------------------------------------------------
+14. The Top Five Nmap Commands
+--------------------------------
+
+
+
+
+-------------------------------------------------------------------------------------
+15. Configuring Wireshark for Analyzing Nmap
+-----------------------------------------------
+Step 1: Open Wireshark and start any capture
+You can use a filter such as:
+| $ sudo nmap -sP 192.168.4.1 |
+(or your target IP from Nmap).
+
+ Step 2: Open Coloring Rules
+In Wireshark:
+Go to the menu:
+View → Coloring Rules…
+You’ll see a list of predefined color rules.
+Click + (Add) to create new ones.
+
+Step 3: Add useful rules for Nmap analysis
+
+Here are recommended rules (you can copy/paste them).
+
+#	Name	Display Filter	Foreground / Background
+1	TCP SYN (scan probe)	tcp.flags.syn == 1 && tcp.flags.ack == 0	Text: Black / Background: Light Blue
+2	SYN-ACK (open port)	tcp.flags.syn == 1 && tcp.flags.ack == 1	Text: Black / Background: Light Green
+3	TCP RST (closed port)	tcp.flags.reset == 1	Text: White / Background: Red
+4	ICMP Echo Request	icmp.type == 8	Text: Black / Background: Light Yellow
+5	ICMP Echo Reply	icmp.type == 0	Text: Black / Background: Green
+6	ICMP Port Unreachable (UDP closed)	icmp.type == 3 && icmp.code == 3	Text: White / Background: Dark Red
+7	UDP traffic (scan probes)	udp	Text: Black / Background: Light Orange
+8	ARP requests	arp.opcode == 1	Text: Black / Background: Light Purple
+9	ARP replies	arp.opcode == 2	Text: White / Background: Purple
+10	Retransmissions / errors	`tcp.analysis.retransmission	
+
+Step 4: Save your color set
+
+-------------------------------------------------------------------------------------
+16. Lab - Ping and Top Ports Scans
+--------------------------------------
+1.| $sudo nmap -sn 192.168.1.1 |
+  What sudo nmap -sn 192.168.1.1 does
+  Short version: it checks whether the host 192.168.1.1 is up (reachable). It does host discovery only — no port scanning.
+
+  sudo — runs Nmap with root privileges (allows raw packets and useful probes such as ARP).
+  nmap — the program.
+  -sn — ping scan / host discovery only. Nmap will not scan ports; it only tries to determine whether the target is alive.
+  192.168.1.1 — target IP (single host).
+
+2.| $ sudo nmap -sn 192.168.1.0/24 |
+  Nice — sudo nmap -sn 192.168.1.0/24 is a very common and useful command. Here’s exactly what it does, what to expect, and a few handy   variants.
+
+  sudo — runs Nmap with root privileges (allows ARP/raw packets).
+  nmap — the tool.
+  -sn — ping scan / host discovery only (no port scans).
+  192.168.1.0/24 — target subnet (all addresses from 192.168.1.0 to 192.168.1.255).
+ 
+  Result: Nmap will probe each IP in that /24 to determine which hosts are “up” (alive). On a local Ethernet/bridged VM it will prefer ARP   requests (very reliable), and also send ICMP or TCP probes as needed.
+
+3.| $ nmap --top-ports 20 192.168.1.1 |
+ :- nmap — run Nmap.
+ :- --top-ports 20 — scan the 20 most common ports according to Nmap’s internal ranked list (instead of the default top 1000 or specifying  ports manually).
+ :- 192.168.1.1 — the single target IP.
+  So Nmap will probe the 20 ports it considers most likely to be open on that host and report which are open/closed/filtered and the service   name it recognizes (e.g., http, ssh).
+
+. Lab - OS Fingerprinting and Aggressive Scanning
+---------------------------------------------------
+
+4.| $ nmap -O 192.168.1.1 |
+  Short answer: -O tells Nmap to perform OS detection (TCP/IP stack fingerprinting) against the target 192.168.1.1. Nmap will try to identify the operating system and sometimes the device type (router, printer, Linux, Windows, etc.).
+nmap — the tool.
+-O — enable OS detection. Nmap sends a series of carefully crafted probes and examines subtle differences in the TCP/IP responses to match them against its OS fingerprint database.
+192.168.1.1 — target IP.
+
+5.| $ sudo nmap -A 192.168.1.1 |
+  Nice — sudo nmap -A 192.168.1.1 is one of the most commonly used one-liners for a thorough, quick reconnaissance of a host. Here’s a clear breakdown of what it does, what to expect, and important cautions.
+  What -A does
+  -A enables "aggressive" mode — a bundle of advanced checks:
+  OS detection (-O) — fingerprint the target’s operating system.
+  Version detection (-sV) — probe open ports to identify service names and versions.
+  Nmap Scripting Engine (NSE) (--script=default) — run default NSE scripts (e.g., banner grabs, basic vulnerability/info scripts).
+  Traceroute — map the path packets take to the target.
+  So the command runs host discovery (if needed), scans ports, then performs OS/service detection, runs scripts, and does traceroute.
+
+
+6. | $sudo nmap -sS -p 80 scanme.nmap.org |
+  Nice — that’s a common Nmap command. Here’s a clear breakdown of what it does, what you’ll see, and safe/ethical notes.
+$ sudo nmap -sS -p 80 scanme.nmap.org
+
+sudo — runs nmap with root privileges (required for some low-level scan types so raw packets can be sent).
+
+nmap — the network mapper program.
+
+-sS — SYN scan (a “half-open” TCP scan). Nmap sends a TCP SYN; if the target replies with SYN/ACK the port is considered open (Nmap then sends RST to avoid completing the full TCP handshake). Fast and stealthier than a full connect scan.
+
+-p 80 — scan only TCP port 80 (HTTP).
+
+scanme.nmap.org — the target hostname. (This host is intentionally provided by the Nmap project for testing — it’s allowed to scan. Do not scan systems you don’t have permission for.)
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Section - 4  	NETWORK AND HOST DISCOVERY TECHNIQUES
+-------------------------------------------------------
+Mapping a Network with Nmap
+-----------------------------
+Mapping a network with Nmap means using Nmap to discover which hosts exist, which services/ports they run, and how hosts are connected or grouped — then turning that data into a human-understandable network map. It’s the process of building a picture of a network’s topology, assets, and exposed services so you can inventory, secure, troubleshoot, or plan changes.
+Below is a practical, hands-on guide: what it is, why you do it, how Nmap helps, common commands & workflows, and safety/ethics.
+
+Why map a network?
+Asset discovery: find machines, devices, IoT, printers, routers.
+Security assessment: locate exposed services and unexpected open ports.
+Troubleshooting: find hosts that aren’t responding, firewall blocks, routing problems.
+Documentation / inventory: maintain a current list of hosts and services.
+Change planning: know what will be affected before updates or segmentation.
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Section - 5   INTERPRETING NMAP SCAN RESULTS
+---------------------------------------------
+What is a TCP/UDP Ports ?
+-------------------------
+- port :- Ports are simply a software abstraction, used to distinguish between communication channels. Similar to the way IP addresses are used to identify machines on networks, ports identify specific applications in use on a single machine.
+
+- A port is like a doorway or channel inside a computer or network device that allows data to enter or leave.
+
+There are two main types of ports based on the transport protocol:
+
+Protocol	Full Form	  	Type				Features
+TCP	Transmission Control Protocol	Connection-oriented	Reliable, ensures delivery, performs error checking
+UDP	User Datagram Protocol		Connectionless	Faster, but no guarantee of delivery or order
+
+TCP (Transmission Control Protocol)
+
+Creates a reliable connection before sending data.
+Ensures that all packets are delivered in order and without loss.
+Used for most important services that need reliability.
+
+ Examples of TCP services:
+
+Service	Port	Description
+HTTP	80	Web browsing
+HTTPS	443	Secure web browsing
+FTP	21	File transfer
+SSH	22	Secure remote login
+SMTP	25	Sending emails
+
+UDP (User Datagram Protocol)
+
+No connection — sends packets directly, faster but less reliable.
+Best for real-time or streaming data, where some packet loss is acceptable.
+
+ Examples of UDP services:
+
+Service	Port	Description
+DNS	53	Domain name lookup
+DHCP	67, 68	Dynamic IP addressing
+TFTP	69	Trivial file transfer
+SNMP	161	Network management
+NTP	123	Time synchronization
+
+The six Nmap port states
+-----------------------------
+open —
+ A service is listening on the port (Nmap saw a response indicating the port accepts connections).
+ Typical TCP signal: target replied SYN/ACK to our SYN (or completed connect).
+ Meaning: an application is reachable and may be probed further.
+
+closed —
+ The port is reachable but there is no service listening.
+ Typical TCP signal: target replied RST.
+ Meaning: host is up, port answered, but nothing is accepting connections.
+
+filtered —
+ Nmap cannot determine whether the port is open because packets are being dropped/blocked (firewall or filter).
+ Typical behaviour: no reply or ICMP unreachable responses.
+ Meaning: access is blocked; you can’t tell open vs closed.
+
+unfiltered —
+ Nmap can reach the port but cannot determine whether it is open or closed.
+ Typical use: used mostly with UDP/ACK scans where reachability is tested; indicates the probe was not blocked.
+ Meaning: host responded to probes but port state (open/closed) is unknown.
+
+open|filtered —
+ Nmap cannot distinguish between open and filtered (common with UDP, IP protocols, or some scan types that produce ambiguous results).
+ Typical behaviour: no response where both “open” or “filtered” are plausible.
+ Meaning: either a service accepted the probe silently or responses are being dropped.
+
+closed|filtered —
+ Nmap is unsure whether a port is closed or filtered.
+ Typical behaviour: ambiguous/noisy responses from certain scan types (rare).
+ Meaning: scanner couldn’t definitively decide between closed or filtered for that probe.
+
+. The Stealth Scan
+-------------------------
+The Stealth Scan (SYN Scan) in Nmap
+
+The Stealth Scan, also known as a SYN scan, is one of the most popular and powerful scan types in Nmap.
+It’s called “stealth” because it doesn’t complete the full TCP handshake, making it less likely to be logged or detected by some systems.
+
+Command:- | sudo nmap -sS <target> | | sudo nmap -sS scanme.nmap.org |
+          -------------------------------------------------------------
+.The TCP Connect Scan
+------------------------
+The TCP Connect Scan is the simplest TCP port scan type: it uses the operating system’s network stack to complete the full TCP 3-way handshake with each target port. In Nmap you request it with -sT. It’s the fallback when you don’t have raw-socket privileges (no sudo).
+
+Command:- | nmap -sT -p 1-1024 target.example.com |
+or for a single port:
+| nmap -sT -p 80 scanme.nmap.org |
+
+TCP Null, Xmas, FIN, and Ack Scans
+--------------------------------------
+TCP Null, Xmas, FIN, and ACK scans — what they are & how to read them
+
+These are special TCP scan types that manipulate TCP flags to elicit different responses from a target. They’re often used to bypass naive firewall rules or to fingerprint filtering behavior. Nmap supports them with -sN (Null), -sF (FIN), -sX (Xmas), and -sA (ACK). Below is a compact cheat-sheet: what each sends, what replies mean, common uses, and caveats.
+
+Quick command cheats
+
+Null scan: sudo nmap -sN <target>
+FIN scan: sudo nmap -sF <target>
+Xmas scan: sudo nmap -sX <target>
+ACK scan: nmap -sA <target> (doesn’t require root)
+
+Use --reason to show why Nmap labeled a port that way.
+
+1) Null scan (-sN)
+   What it sends: a TCP packet with no flags set.
+   Interpretation (classic TCP/IP behavior / RFC 793):
+   No reply → port open or filtered (many systems historically don’t respond to these packets on open ports).
+   RST → port closed.
+   Use case: try to bypass simple stateless filters or test RFC-compliant stacks.
+   Caveats: Modern firewalls/OSes often don’t follow the classic behavior; many will drop or respond differently. Rarely reliable on Windows   (Windows typically responds with RST for closed and open ports—making results confusing).
+
+2) FIN scan (-sF)
+   What it sends: a TCP packet with only the FIN flag set.
+   Interpretation:
+   No reply → port open or filtered.
+   RST → port closed.
+   Use case: similar to Null; historically effective against older UNIX stacks and some firewall setups.
+   Caveats: Not reliable against modern systems (Windows often just replies RST, so FIN won’t show open ports there).
+
+3) Xmas scan (-sX)
+   What it sends: a TCP packet with FIN, PSH, and URG flags set (lights up like a Christmas tree—hence the name).
+   Interpretation:
+   No reply → port open or filtered.
+   RST → port closed.
+   Use case: another trick to trigger different behavior in RFC-compliant stacks; can sometimes bypass some poorly configured filters.
+   Caveats: Same reliability problems as Null/FIN; poor results on Windows. Modern IDS/IPS can spot this pattern easily.
+
+4) ACK scan (-sA)
+   What it sends: a TCP packet with only the ACK flag set (resembles normal established-connection traffic).
+   Interpretation: different goal than the above scans.
+   RST reply → target is unfiltered (i.e., packets reach the host and the host responds).
+   No reply or ICMP unreachable → packet is filtered (firewall/router dropping the probe).
+   Use case: determine whether a firewall is stateful or whether a port is filtered — useful for mapping firewall rules (not for open/closed  detection).
+   Caveats: ACK scans generally cannot tell open vs closed, only filtered vs unfiltered. Good for discovering stateful firewall behavior.
+
+When to Use UDP Scans
+---------------------------
+UDP scans (-sU) are used when you need to discover UDP-based services or understand how UDP traffic is treated by hosts/firewalls. UDP is very different from TCP: many services speak UDP (DNS, SNMP, NTP, etc.), UDP is connectionless, and responses (or lack of them) are interpreted differently. Use a UDP scan when any of the following apply.
+
+When to run a UDP scan — practical situations
+You need to find UDP services (DNS, NTP, SNMP, TFTP, DHCP, NetBIOS, RIP, SSDP, IPSec/IKE).
+Performing a full inventory of a host/subnet — include UDP to avoid blindspots.
+Security testing / vulnerability assessment — many vulnerabilities are on UDP services (SNMP misconfigs, open DNS resolvers, etc.).
+Troubleshooting UDP connectivity — determine whether UDP probes are dropped by a firewall.
+Firewall / filtering analysis — UDP behavior often shows “open|filtered” vs. ICMP port unreachable (closed), revealing filter policies.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+SECTION :6  |        BEYOND THE BASICS-VERTION AND OS FINGERPRINTING
+-----------------------------------------------------------------------
+ How OS Fingerprinting Works (And When it Won't)
+-------------------------------------------------
+OS fingerprinting is the process of determining the operating system (and often kernel version) running on a remote host by observing how that host implements parts of the TCP/IP stack. Tools (like Nmap, p0f, Xprobe) send carefully crafted probes (or just observe traffic) and compare the responses to a database of known behaviours. Because every OS (and sometimes particular kernel/build) implements low-level networking slightly differently, those differences form a “fingerprint.”
+
+| $ sudo nmap -O 192.168.1.1 -v |
+Short answer: this runs an active OS detection scan (-O) against 192.168.1.1 with increased verbosity (-v) and uses sudo so Nmap can send raw packets (needed for accurate fingerprinting). Below is a practical walkthrough of what each part does, what Nmap will try to learn, example output snippets, how to read them, and tips to improve accuracy.
+
+Flags explained
+
+sudo — run with root privileges (required for raw packet sends/receives used by -O and some scan types).
+nmap — the scanner.
+-O — Active OS detection. Nmap sends several specially crafted probes and compares responses to its OS fingerprint database.
+192.168.1.1 — the target IP (commonly a gateway/router on home/office LANs).
+-v — verbose mode; Nmap prints more progress information and intermediate details.
+
+What is Version Discovery?
+-------------------------------
+                                                              
+Version discovery (also called service version detection) is an Nmap feature used to identify the exact software and version running on open ports — not just the port number or service name.
+It’s activated using the -sV option and is one of the most powerful parts of Nmap’s scanning capabilities.
+
+| sudo nmap -sV 192.168.1.1 |
+| sudo nmap -sV scanme.nmap.org |
+| sudo nmap -sS -sV 192.168.1.10 |
+
+Purpose
+
+When Nmap detects an open port (e.g., port 80 = HTTP), it doesn’t automatically know:
+Which web server is running (Apache, Nginx, IIS, etc.),
+What version it is (e.g., Apache 2.4.54), or
+What protocol variant is used (e.g., HTTPS vs HTTP).
+
+That’s where version discovery comes in — it probes the service with carefully chosen requests to elicit identifiable responses and compare them against Nmap’s built-in service fingerprint database.
+
+Using Verbosity in Nmap Output
+--------------------------------
+Using Verbosity in Nmap Output (-v and -vv)
+
+Verbosity in Nmap controls how much detail Nmap displays during and after a scan.
+It’s extremely helpful for understanding scan progress, why results appear a certain way, and debugging network issues.
+
+Purpose of Verbosity
+
+By default, Nmap keeps its output concise.
+Adding verbosity (-v) increases the level of information shown about:
+Scan progress
+Host discovery
+Port states
+Service detection
+OS detection and reasoning
+You can add multiple v characters (e.g., -vv, -vvv) to increase the level of detail.
+
+| nmap -v <target> |
+| nmap -vv <target> |
+| nmap -sS -sV -O -v <target> |
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Section 7 :                    SCAN TIMING AND PERFORMANCE
+------------------------------------------------------------
+
+ Using Timing Templates
+-------------------------
+- Scans will be faster when we use timing templates
+Timing templates in Nmap control how fast or slow your scan runs — balancing speed, accuracy, and stealth.
+
+Purpose of Timing Templates
+
+Different networks and environments require different scanning speeds:
+Slow scans are stealthy and less likely to trigger firewalls or intrusion detection systems (IDS).
+Fast scans finish quickly but can overwhelm networks or be easily detected.
+Timing templates give you quick presets so you don’t have to fine-tune dozens of individual timing options.
+
+Command Syntax
+| nmap -T<0-5> <target> |
+
+| $sudo nmap scanme.nmap.org -T5 |
+
+The Six Timing Templates
+Template	Name	Description
+-T0	Paranoid	Slowest. Used for IDS evasion — sends one probe every 5 minutes.
+-T1	Sneaky	Very slow, stealthy scanning.
+-T2	Polite	Slower than default; reduces network load.
+-T3	Normal (Default)	Balanced speed and reliability.
+-T4	Aggressive	Faster scans for reliable networks; may trigger IDS/firewalls.
+-T5	Insane	Extremely fast — for local networks only. High risk of dropped packets.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+What is the Nmap Scripting Engine (NSE)?
+-------------------------------------------
+The Nmap Scripting Engine (NSE) is a framework within Nmap that uses scripts written in Lua to extend Nmap’s functionality beyond basic port scanning.
+
+NSE is used to:
+
+Detect vulnerabilities in applications or systems.
+Perform network discovery (find hosts, open ports, and services).
+Enumerate users, shares, and configurations.
+Brute-force credentials (where legal).
+Perform version and OS detection enhancements.
+Automate custom scanning logic via scripts.
+
+ The Script Database
+-------------------------------
+
+The “script database” refers to the collection of NSE scripts and their supporting libraries that ship with Nmap (and the index Nmap builds for searching/help). It’s the place Nmap looks when you run --script=..., and it’s what powers -sC, --script-help, --script-updatedb, tab-completion, etc. Here’s a compact, practical guide to its layout, metadata, how to search/update it, and how to use scripts safely.
+
+Lab - NSE: The Default Scripts
+--------------------------------
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+section 9 :                      NSE Beyond the Basics
+----------------------------------------------------------
+
+metasploitable nmap
+----------------------
+
+Nice — scanning a Metasploitable VM with Nmap is a great hands-on lab. Below is a compact, practical playbook (safe, step-by-step) you can run in your lab to discover hosts, enumerate services, and find vulnerabilities — plus example commands, what they do, and important safety warnings.
+
+Quick safety reminder
+
+Only scan your Metasploitable VM (or other lab machines you control). Metasploitable intentionally contains vulnerable services; many NSE scripts or exploit attempts can be intrusive or destructive. Run scans on an isolated lab network.
+
+1) Basic host discovery (is the VM up?)
+nmap -sn 192.168.56.0/24
+
+What it does: ping/ARP sweep to find live hosts on the subnet. Use the VM host IP you find (e.g., 192.168.56.101).
+
+Lab - HTTP Enumeration - Finding Hidden Folders
+----------------------------------------------------
+Nice — here’s the rest of the lab: how to test discovered paths manually, verify findings, escalate safely in a lab, and how defenders should fix the problems. I’ll keep it actionable: commands you can run, what results mean, and next steps.
+
+| ─$ nmap --script "http-enum" 192.168.1.0  |
+
+1) Confirm a discovery (manual checks)
+When a fuzzer or http-enum reports a path (e.g. /admin, /backup.zip, /.git/), always verify manually:
+Inspect response headers + body:
+
+Lab - Hacking FTP Logins
+--------------------------------------------
+1.Defensive / hardening guide for FTP servers
+  Disable plain FTP; use SFTP (SSH) or FTPS (FTP over TLS).
+  Disable anonymous logins.
+  Enforce strong password policies and use account lockouts / rate-limiting.
+  Use chroot (jail) so users can’t traverse the filesystem.
+  Enable logging (detailed auth logs) and centralize logs (SIEM).
+  Deploy fail2ban / iptables rules to block repeated failed attempts.
+  Use MFA where possible (for admin accounts).
+  Keep FTP software (vsftpd, proftpd, pure-ftpd) patched; only enable needed modules.
+  Monitor for signs of compromise (new users, altered files, unusual transfers).
+2.How to perform authorized FTP security testing in a lab (safe, legal)
+  Set up an isolated lab: two VMs on an internal-only virtual network (attacker + victim).
+  Install a vulnerable target intentionally (Metasploitable or a lab image) or a fresh FTP server you control.
+  Create test accounts with weak/strong passwords and observe how the server behaves.
+  Use logging and packet capture (tcpdump/Wireshark) to learn how FTP authentication looks on the wire.
+  Practice remediations (apply FTPS, configure fail2ban) and verify protections block the noisy tests.
+
+Lab - SMB Login Enumeration
+------------------------------------
+SMB (Server Message Block) is the protocol Windows uses for file and printer sharing — ports 445/tcp and sometimes 139/tcp.
+
+Login enumeration means:
+Checking which SMB accounts exist or are valid, often by analyzing the server’s responses to authentication or info queries.
+
+This helps network defenders and ethical pentesters find:
+
+Misconfigured shares (like “Everyone” access)
+Anonymous or guest access
+Usernames exposed through SMB responses
+Weak or default configurations
+
+Why It Matters
+
+Attackers may try to enumerate SMB logins to prepare brute-force or password-spray attacks.
+Admins can test for this exposure to harden systems and prevent information leakage.
+During vulnerability assessments, SMB enumeration often reveals domain users, OS info, shares, and permissions.
+
+ Lab - NSE Vulnerability Scripts
+------------------------------------------------------
+
+What Are NSE Vulnerability Scripts?
+
+NSE (Nmap Scripting Engine) includes a special category of scripts called vuln scripts.
+These scripts test targets for known vulnerabilities, misconfigurations, and security weaknesses.
+
+They automate checks such as:
+
+Outdated software versions
+Default or weak configurations
+Common CVEs (e.g., SMB, HTTP, FTP vulnerabilities)
+Missing patches
+
+They are safe for scanning in your lab or on systems you’re authorized to test — but must not be used on unknown/public systems.
+How Nmap Vulnerability Scripts Work
+They run against specific open ports
+Check banners, protocol responses, or exploitation vectors
+Detect if the target is vulnerable
+Output “VULNERABLE”, “LIKELY VULNERABLE”, or “NOT VULNERABLE”
+They do NOT exploit the system — they only test safely.
+
+Most Popular NSE Vulnerability Scripts (with explanation)
+🔹 SMB Vulnerabilities
+Script Name	What It Tests
+smb-vuln-ms17-010	EternalBlue
+smb-vuln-ms08-067	Classic Windows RPC flaw
+smb-vuln-cve-2017-7494	SambaCry (Linux SMB)
+
+ Lab - Scanning for TLS Certificates and Versions
+----------------------------------------------------
+
+1. What Is TLS Certificate & Version Scanning?
+
+TLS scanning helps you identify:
+
+✔ TLS/SSL version
+(SSLv2, SSLv3, TLS 1.0/1.1/1.2/1.3)
+
+✔ Certificate details
+Common Name (CN)
+SAN domains
+Issuer (CA)
+Expiration date
+Key size (1024/2048 bits)
+Signature algorithm (SHA1/SHA256)
+Weak or expired certificates
+
+✔ Weak configurations
+Deprecated versions (SSLv2, SSLv3, TLS1.0)
+Weak ciphers (RC4, DES, EXPORT-grade)
+
+ 2. Nmap Scripts for TLS/SSL Scanning
+Nmap provides NSE scripts designed for SSL/TLS.
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Section 10 :                FIREWALL/IDS EVATION AND IP SPOOFING
+-------------------------------------------------------------------
+
+IP Fragmentation (-f)
+-------------------
+IP Fragmentation (in networking & in Nmap scanning)
+IP fragmentation is a process where large IP packets are broken into smaller pieces (fragments) so they can travel across networks where the Maximum Transmission Unit (MTU) is smaller—like Ethernet, Wi-Fi, or VPN tunnels.
+
+ What Is IP Fragmentation?
+
+When a router receives a packet that is larger than the MTU of the outgoing interface, it splits the packet into smaller fragments.
+Each fragment contains:
+
+A fragment offset (position in the original packet)
+A More Fragments (MF) flag
+The same Identification number (ID)
+The receiving device reassembles the fragments to build the original packet.
+
+Why Does IP Fragmentation Matter in Hacking / Nmap?
+Attackers and pentesters use fragmentation for evasion, stealth, and bypassing firewalls.
+
+1. Evading Firewalls / IDS
+Some firewalls or intrusion detection systems cannot properly reassemble fragmented packets.
+
+-f (fragment packets); --mtu (using the specified MTU)
+The -f option causes the requested scan (including host discovery scans) to use tiny fragmented IP packets. The idea is to split up the TCP header over several packets to make it harder for packet filters, intrusion detection systems, and other annoyances to detect what you are doing. Be careful with this! Some programs have trouble handling these tiny packets. The old-school sniffer named Sniffit segmentation faulted immediately upon receiving the first fragment. Specify this option once, and Nmap splits the packets into eight bytes or less after the IP header. So a 20-byte TCP header would be split into three packets. Two with eight bytes of the TCP header, and one with the final four. Of course each fragment also has an IP header. Specify -f again to use 16 bytes per fragment (reducing the number of fragments). Or you can specify your own offset size with the --mtu option. Don't also specify -f if you use --mtu. The offset must be a multiple of eight. While fragmented packets won't get by packet filters and firewalls that queue all IP fragments, such as the CONFIG_IP_ALWAYS_DEFRAG option in the Linux kernel, some networks can't afford the performance hit this causes and thus leave it disabled. Others can't enable this because fragments may take different routes into their networks. Some source systems defragment outgoing packets in the kernel. Linux with the iptables connection tracking module is one such example. Do a scan while a sniffer such as Wireshark is running to ensure that sent packets are fragmented. If your host OS is causing problems, try the --send-eth option to bypass the IP layer and send raw ethernet frames.
+
+Fragmentation is only supported for Nmap's raw packet features, which includes TCP and UDP port scans (except connect scan and FTP bounce scan) and OS detection. Features such as version detection and the Nmap Scripting Engine generally don't support fragmentation because they rely on your host's TCP stack to communicate with target services.
+
+Spoofing IP Addresses
+---------------------------------
+
+What Is IP Spoofing?
+IP spoofing is the technique of faking the source IP address in a packet so that it appears to come from a different machine.
+
+Why Do Hackers Use IP Spoofing?
+ 1. To Hide Their Identity
+
+Attackers spoof IPs so logs do not show their real machine.
+ 2. To Bypass IP-Based Security
+
+Some systems allow traffic only from trusted IPs.
+
+Using Decoys to Evade Detection
+------------------------------------------
+Using decoys in Nmap is a stealth technique that helps hide your real IP address during a scan. It makes the scan appear to come from multiple IP addresses, confusing firewalls, intrusion detection systems (IDS), and log analysis tools.
+
+What Is a Decoy Scan?
+
+A decoy scan sends packets to the target using multiple fake IP addresses along with your real IP.
+The target sees traffic coming from many IPs, so it’s difficult to tell which IP is the real attacker.
+
+How to Use Decoys in Nmap
+The decoy option is:
+
+| -D <decoy1,decoy2,ME,decoy3> |
+| $ sudo nmap -sS -p80 -D 45.45.45.45,100.100.100.100,192.168.1.103 -e en0 scanme.nmap.org |
+
+Why Use Decoy Scans? (Advantages)
+ 1. Hide Your Real IP
+The target sees multiple source IPs → hard to identify the true scanner.
+ 2. Confuse Intrusion Detection Systems
+Security analysts will struggle to trace the real attacker.
+ 3. Bypass IP-based Blocking
+If the target bans IPs that scan it, you avoid detection or blocking.
