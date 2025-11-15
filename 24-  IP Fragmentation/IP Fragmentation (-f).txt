@@ -1,0 +1,25 @@
+IP Fragmentation (-f)
+-------------------
+IP Fragmentation (in networking & in Nmap scanning)
+IP fragmentation is a process where large IP packets are broken into smaller pieces (fragments) so they can travel across networks where the Maximum Transmission Unit (MTU) is smaller—like Ethernet, Wi-Fi, or VPN tunnels.
+
+ What Is IP Fragmentation?
+
+When a router receives a packet that is larger than the MTU of the outgoing interface, it splits the packet into smaller fragments.
+Each fragment contains:
+
+A fragment offset (position in the original packet)
+A More Fragments (MF) flag
+The same Identification number (ID)
+The receiving device reassembles the fragments to build the original packet.
+
+Why Does IP Fragmentation Matter in Hacking / Nmap?
+Attackers and pentesters use fragmentation for evasion, stealth, and bypassing firewalls.
+
+1. Evading Firewalls / IDS
+Some firewalls or intrusion detection systems cannot properly reassemble fragmented packets.
+
+-f (fragment packets); --mtu (using the specified MTU)
+The -f option causes the requested scan (including host discovery scans) to use tiny fragmented IP packets. The idea is to split up the TCP header over several packets to make it harder for packet filters, intrusion detection systems, and other annoyances to detect what you are doing. Be careful with this! Some programs have trouble handling these tiny packets. The old-school sniffer named Sniffit segmentation faulted immediately upon receiving the first fragment. Specify this option once, and Nmap splits the packets into eight bytes or less after the IP header. So a 20-byte TCP header would be split into three packets. Two with eight bytes of the TCP header, and one with the final four. Of course each fragment also has an IP header. Specify -f again to use 16 bytes per fragment (reducing the number of fragments). Or you can specify your own offset size with the --mtu option. Don't also specify -f if you use --mtu. The offset must be a multiple of eight. While fragmented packets won't get by packet filters and firewalls that queue all IP fragments, such as the CONFIG_IP_ALWAYS_DEFRAG option in the Linux kernel, some networks can't afford the performance hit this causes and thus leave it disabled. Others can't enable this because fragments may take different routes into their networks. Some source systems defragment outgoing packets in the kernel. Linux with the iptables connection tracking module is one such example. Do a scan while a sniffer such as Wireshark is running to ensure that sent packets are fragmented. If your host OS is causing problems, try the --send-eth option to bypass the IP layer and send raw ethernet frames.
+
+Fragmentation is only supported for Nmap's raw packet features, which includes TCP and UDP port scans (except connect scan and FTP bounce scan) and OS detection. Features such as version detection and the Nmap Scripting Engine generally don't support fragmentation because they rely on your host's TCP stack to communicate with target services.
