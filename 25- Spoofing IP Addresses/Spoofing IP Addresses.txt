@@ -1,0 +1,13 @@
+Spoofing IP Addresses
+---------------------------------
+
+What Is IP Spoofing?
+IP spoofing is the technique of faking the source IP address in a packet so that it appears to come from a different machine.
+
+Why Do Hackers Use IP Spoofing?
+ 1. To Hide Their Identity
+
+Attackers spoof IPs so logs do not show their real machine.
+ 2. To Bypass IP-Based Security
+
+Some systems allow traffic only from trusted IPs.
