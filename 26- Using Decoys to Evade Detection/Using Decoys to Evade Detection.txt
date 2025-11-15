@@ -1,0 +1,22 @@
+Using Decoys to Evade Detection
+------------------------------------------
+Using decoys in Nmap is a stealth technique that helps hide your real IP address during a scan. It makes the scan appear to come from multiple IP addresses, confusing firewalls, intrusion detection systems (IDS), and log analysis tools.
+
+What Is a Decoy Scan?
+
+A decoy scan sends packets to the target using multiple fake IP addresses along with your real IP.
+The target sees traffic coming from many IPs, so it’s difficult to tell which IP is the real attacker.
+
+How to Use Decoys in Nmap
+The decoy option is:
+
+| -D <decoy1,decoy2,ME,decoy3> |
+| $ sudo nmap -sS -p80 -D 45.45.45.45,100.100.100.100,192.168.1.103 -e en0 scanme.nmap.org |
+
+Why Use Decoy Scans? (Advantages)
+ 1. Hide Your Real IP
+The target sees multiple source IPs → hard to identify the true scanner.
+ 2. Confuse Intrusion Detection Systems
+Security analysts will struggle to trace the real attacker.
+ 3. Bypass IP-based Blocking
+If the target bans IPs that scan it, you avoid detection or blocking.
